@@ -22,7 +22,7 @@ const Game = () => {
                     case "init_game":
                         setBoard(chess.board());
                         setStarted(true);
-                        console.log("Game initialized");
+                        console.log("Game initialized"+setStarted);
                         break;
 
                     case "move":

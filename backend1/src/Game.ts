@@ -1,5 +1,6 @@
 import { Chess } from "chess.js";
 import { Socket } from "socket.io";
+import { requesthandler } from "./request";
 
   
 export class Game{
@@ -10,9 +11,11 @@ export class Game{
     private startTime:Date;
     private moveCount:number;
     public gameId:number;
+    public ChessId:number
 
     constructor(player1:Socket,player2:Socket){
         this.gameId = Math.random();
+        this.ChessId = Math.random();
         this.player1=player1;
         this.player2=player2;
         this.board=new Chess();
@@ -20,14 +23,14 @@ export class Game{
         this.moves=[];
         this.startTime=new Date();
         this.player1.send(JSON.stringify({
-            type:"start",
+            type:"init_game",
             payload:{
                 colors:"white",
                 gameId: this.gameId 
             }
         }))
         this.player2.send(JSON.stringify({
-            type:"start",
+            type:"init_game",
             payload:{
                 colors:"black",
                 gameId: this.gameId 
@@ -42,6 +45,9 @@ export class Game{
             if(this.moveCount%2===0 &&socket!==this.player1 || this.moveCount%2===1 && socket!==this.player2){
                 return;
             }
+            requesthandler(move,this.gameId,this.ChessId,1,2).then(()=>{
+                console.log("request made to backend2 ")
+            })
             this.board.move(move);
             
 
